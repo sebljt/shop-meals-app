@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shop & Meals</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0f1117; color: #e2e8f0; min-height: 100vh; }
+  
+  /* TABS */
+  .tab-bar { display: flex; background: #1e293b; border-bottom: 2px solid #334155; position: sticky; top: 0; z-index: 100; }
+  .tab { flex: 1; padding: 14px 8px; text-align: center; font-size: 0.8rem; font-weight: 700; color: #64748b; cursor: pointer; transition: all 0.2s; text-transform: uppercase; letter-spacing: 0.05em; }
+  .tab.active { color: #3b82f6; border-bottom: 3px solid #3b82f6; }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* SHOPPING LIST */
+  .section { margin: 0; }
+  .section-header { background: #1e293b; padding: 12px 16px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: #64748b; position: sticky; top: 54px; z-index: 50; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #334155; }
+  .section-header .icon { font-size: 1.1rem; }
+  .section-header .count { margin-left: auto; background: #334155; color: #94a3b8; border-radius: 10px; padding: 2px 8px; font-size: 0.65rem; }
+  .item { display: flex; align-items: center; gap: 12px; padding: 13px 16px; border-bottom: 1px solid #1e293b; cursor: pointer; transition: background 0.1s; }
+  .item:active { background: #1e293b; }
+  .item.done { opacity: 0.35; }
+  .item.done .item-name { text-decoration: line-through; }
+  .checkbox { width: 22px; height: 22px; border-radius: 50%; border: 2px solid #475569; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+  .item.done .checkbox { background: #22c55e; border-color: #22c55e; }
+  .checkbox::after { content: '✓'; color: white; font-size: 0.75rem; display: none; font-weight: 800; }
+  .item.done .checkbox::after { display: block; }
+  .item-name { font-size: 0.9rem; flex: 1; }
+  .item-qty { font-size: 0.75rem; color: #64748b; flex-shrink: 0; }
+  .progress-bar { height: 4px; background: #1e293b; position: sticky; top: 54px; z-index: 60; }
+  .progress-fill { height: 100%; background: #22c55e; transition: width 0.3s; }
+  .progress-text { text-align: center; padding: 10px; font-size: 0.75rem; color: #64748b; }
+  .clear-btn { display: block; margin: 16px; padding: 12px; background: #1e293b; border: 1px solid #334155; color: #64748b; border-radius: 8px; font-size: 0.8rem; cursor: pointer; text-align: center; }
+
+  /* MEAL PLAN */
+  .meal-plan { padding: 12px; }
+  .week-title { font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: #64748b; padding: 12px 4px 8px; border-bottom: 1px solid #334155; margin-bottom: 8px; }
+  .day-card { background: #1e293b; border-radius: 10px; margin-bottom: 8px; overflow: hidden; }
+  .day-header { padding: 10px 12px; background: #263548; display: flex; justify-content: space-between; align-items: center; }
+  .day-name { font-weight: 700; font-size: 0.85rem; }
+  .day-date { font-size: 0.7rem; color: #64748b; }
+  .meals { padding: 8px 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .meal { padding: 8px; border-radius: 6px; }
+  .meal.dinner { background: #1a2535; border-left: 3px solid #3b82f6; }
+  .meal.lunch { background: #1a2535; border-left: 3px solid #f59e0b; }
+  .meal-type { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; color: #64748b; margin-bottom: 3px; }
+  .meal-name { font-size: 0.78rem; font-weight: 600; line-height: 1.3; }
+  .protein-tag { display: inline-block; font-size: 0.6rem; padding: 1px 5px; border-radius: 4px; margin-top: 3px; font-weight: 700; }
+  .tag-s { background: #7f1d1d; color: #fca5a5; }
+  .tag-c { background: #78350f; color: #fcd34d; }
+  .tag-f { background: #0c4a6e; color: #7dd3fc; }
+
+  /* RECIPES */
+  .recipes { padding: 12px; }
+  .recipe-card { background: #1e293b; border-radius: 10px; margin-bottom: 12px; overflow: hidden; }
+  .recipe-header { padding: 12px 14px; background: #263548; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+  .recipe-title { font-weight: 700; font-size: 0.9rem; }
+  .recipe-meta { font-size: 0.7rem; color: #64748b; margin-top: 2px; }
+  .recipe-toggle { color: #64748b; font-size: 1.2rem; transition: transform 0.2s; }
+  .recipe-toggle.open { transform: rotate(180deg); }
+  .recipe-body { display: none; padding: 12px 14px; }
+  .recipe-body.open { display: block; }
+  .recipe-section-title { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: #3b82f6; margin: 10px 0 6px; letter-spacing: 0.05em; }
+  .ingredient-list { list-style: none; }
+  .ingredient-list li { font-size: 0.82rem; padding: 4px 0; border-bottom: 1px solid #334155; display: flex; gap: 8px; }
+  .ingredient-list li::before { content: '·'; color: #475569; }
+  .step-list { list-style: none; counter-reset: steps; }
+  .step-list li { counter-increment: steps; font-size: 0.82rem; padding: 6px 0 6px 28px; border-bottom: 1px solid #334155; position: relative; line-height: 1.4; }
+  .step-list li::before { content: counter(steps); position: absolute; left: 0; top: 6px; background: #3b82f6; color: white; width: 18px; height: 18px; border-radius: 50%; font-size: 0.65rem; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+</style>
+</head>
+<body>
+
+<div class="tab-bar">
+  <div class="tab active" onclick="showTab('shop')">🛒 Shop</div>
+  <div class="tab" onclick="showTab('meals')">🍽️ Meals</div>
+  <div class="tab" onclick="showTab('recipes')">👨‍🍳 Recipes</div>
+</div>
+
+<!-- SHOPPING LIST TAB -->
+<div id="tab-shop" class="tab-content active">
+  <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+  <div class="progress-text" id="progress-text">0 of 0 done</div>
+
+  <div id="list-container"></div>
+  <button class="clear-btn" onclick="clearAll()">↺ Uncheck all</button>
+</div>
+
+<!-- MEAL PLAN TAB -->
+<div id="tab-meals" class="tab-content">
+  <div class="meal-plan" id="meal-plan-container"></div>
+</div>
+
+<!-- RECIPES TAB -->
+<div id="tab-recipes" class="tab-content">
+  <div class="recipes" id="recipes-container"></div>
+</div>
+
+<script>
+// ── SHOPPING DATA ──────────────────────────────────────────────
+const sections = [
+  { id: 'veg', label: 'Fruit & Veg', icon: '🥦', items: [
+    'Tesco Broccoli 375g x3',
+    'Brown Onions 1kg x2',
+    'Tesco Root Ginger Loose x1',
+    'Tesco Garlic 4 Pack x1',
+    'Mixed Peppers (2 red, 2 green, 2 yellow)',
+    'Tesco Closed Cup Mushrooms 400g x1',
+    'Tesco Baby Potatoes 1kg x2',
+    'Tesco Large Baking Potatoes Loose x6',
+    'Spinach bag x1',
+    'Tesco Apple Family Bag 1.5kg x1',
+    'Suntrail Farms Easy Peelers 600g x2',
+    'Fresh coriander x1',
+    'Lemons x2',
+    'Limes x2',
+  ]},
+  { id: 'bread', label: 'Bread & Bakery', icon: '🍞', items: [
+    'H.W. Nevills White Bread 800g x2',
+    'Tesco White Toastie Bread 800g x1',
+    'Tesco White Plain Pitta Bread 6 Pack x2',
+    'Tesco Plain Naans 2 Pack x2',
+    'Old El Paso Regular Flour Tortillas 8pk x2',
+  ]},
+  { id: 'meat', label: 'Meat & Fish', icon: '🥩', items: [
+    '2kg Steak (already have)',
+    '2kg Chicken (already have)',
+    'Tesco Wafer Thin Cooked Ham 125g x2',
+  ]},
+  { id: 'chilled', label: 'Chilled & Dairy', icon: '🧀', items: [
+    'Tesco British Double Cream 300ml x2',
+    'Tesco Soured Cream 300ml x2',
+    'Creamfields Mozzarella 210g x2',
+    'Creamfields Mild White Cheddar 250g x1',
+    'Creamfields Mature Grated Cheddar 250g x1',
+    'Tesco Medium Free Range Eggs 12 Pack x1',
+    'Tesco British Salted Butter 250g x2',
+    'Tesco Plain Naan 2 Pack (check chilled aisle)',
+    'Creamfields Strawberry Yoghurt 450g x2',
+    'Creamfields Low Fat Natural Yoghurt 500g x2',
+    'Tesco Double Cream 150ml x1 (curry marinade)',
+  ]},
+  { id: 'frozen', label: 'Frozen', icon: '❄️', items: [
+    'Tesco Basa Fillets 500g x3',
+    'Tesco Garden Peas 1kg x1',
+    'Growers Harvest Mixed Veg 1kg x1',
+  ]},
+  { id: 'tinned', label: 'Tinned & Jars', icon: '🥫', items: [
+    'Tesco Italian Chopped Tomatoes 4x400g x2',
+    'Growers Harvest Red Kidney Beans 400g x2',
+    'Tesco Baked Beans 220g x4',
+    'Tesco Sweetcorn 200g x2',
+    'Hearty Food Co Tomato & Herb Pasta Sauce 440g x2',
+    'Tesco Mild Salsa Dip 300g x1',
+  ]},
+  { id: 'dinner', label: 'Dinner Ingredients', icon: '🌙', items: [
+    'Soy sauce x1',
+    'Tesco Smoked Paprika 48g x1',
+    'Tesco Mild Chilli Powder 50g x1',
+    'Tesco Ground Cumin 43g x1',
+    'Garam masala x1',
+    'Turmeric x1',
+    'Ground coriander x1',
+    'Honey x1',
+    'Worcestershire sauce x1',
+    'Dijon mustard x1',
+    'Tesco Beef Stock Cubes 10 Pack x1',
+    'Tesco Chicken Stock Cubes 10 Pack x1',
+    'Tesco Vegetable Stock Cubes x1',
+    'Growers Harvest Red Kidney Beans 400g x2',
+    'Tesco Italian Chopped Tomatoes 4x400g x2',
+    'Tesco Mild Salsa Dip 300g x1',
+    'Hearty Food Co Tomato & Herb Pasta Sauce 440g x2',
+    'Tesco Soured Cream 300ml x2',
+    'Tesco British Double Cream 300ml x2',
+  ]},
+  { id: 'lunch', label: 'Lunch Bits', icon: '☀️', items: [
+    'Caesar dressing x1',
+    'Mayonnaise x1',
+    'Tesco Wafer Thin Cooked Ham 125g x2',
+    'Creamfields Mature Grated Cheddar 250g x1',
+    'Tesco White Toastie Bread 800g x1',
+    'Old El Paso Regular Flour Tortillas 8pk x2',
+    'Tesco White Plain Pitta Bread 6 Pack x2',
+    'Tesco Plain Naans 2 Pack x2',
+    'Tesco Sweetcorn 200g x2',
+    'Tesco Baked Beans 220g x4',
+    'Sheldon\'s Family-Filling Potato Cakes 4 Pack x3',
+  ]},
+  { id: 'dry', label: 'Dry & Cupboard', icon: '🌾', items: [
+    'Tesco Easy Cook Long Grain Rice 1kg x2',
+    'Hearty Food Co Penne Pasta 500g x2',
+    'Tesco Golden Breadcrumbs 175g x1',
+  ]},
+  { id: 'snacks', label: 'Snacks & Sweet', icon: '🍫', items: [
+    "Fox's Rocky Original 7 Pack x2",
+    'Stockwell Variety Pack Crisps 6x25g x2',
+    'Tesco Bourbon Creams x1',
+    "Kellogg's Rice Krispies Squares x1",
+    'Cadbury Timeout Milk Chocolate x1',
+    'Toffee Crisp 7 Pack x1',
+  ]},
+  { id: 'other', label: 'Other / Household', icon: '🧴', items: [
+    'Sheldon\'s Family-Filling Potato Cakes 4 Pack x3',
+    'Sure Men Invisible Ice Deodorant x2',
+    'Tesco Pineapple & Grapefruit Drink x1',
+  ]},
+];
+
+// ── MEAL PLAN DATA ─────────────────────────────────────────────
+const mealPlan = [
+  { week: 'Week 1 — June 13–19', days: [
+    { day: 'Fri', date: '13 Jun', dinner: { name: 'Seared Steak & Chips', tag: 's' }, lunch: { name: 'Chicken Caesar Wraps', tag: 'c' } },
+    { day: 'Sat', date: '14 Jun', dinner: { name: 'Basa Parcels, Lemon & Capers', tag: 'f' }, lunch: { name: 'Leftover Steak Toasties', tag: 's' } },
+    { day: 'Sun', date: '15 Jun', dinner: { name: 'Roast Chicken Thighs & Roasties', tag: 'c' }, lunch: { name: 'Chicken Noodle Soup', tag: 'c' } },
+    { day: 'Mon', date: '16 Jun', dinner: { name: 'Steak Stir-fry & Rice Noodles', tag: 's' }, lunch: { name: 'Fish Finger Sarnies', tag: 'f' } },
+    { day: 'Tue', date: '17 Jun', dinner: { name: 'Chicken Fajitas', tag: 'c' }, lunch: { name: 'Steak & Rice Bowl', tag: 's' } },
+    { day: 'Wed', date: '18 Jun', dinner: { name: 'Texan Beef Chilli & Rice', tag: 's' }, lunch: { name: 'Leftover Fajita Chicken Toasties', tag: 'c' } },
+    { day: 'Thu', date: '19 Jun', dinner: { name: 'Basa Fish Tacos', tag: 'f' }, lunch: { name: 'Chilli Leftovers', tag: 's' } },
+  ]},
+  { week: 'Week 2 — June 20–26', days: [
+    { day: 'Fri', date: '20 Jun', dinner: { name: 'Chicken Tikka Masala & Rice', tag: 'c' }, lunch: { name: 'Fish Wrap Leftovers', tag: 'f' } },
+    { day: 'Sat', date: '21 Jun', dinner: { name: 'Steak Night — Sirloin & Broccoli', tag: 's' }, lunch: { name: 'Tikka Leftovers on Naan', tag: 'c' } },
+    { day: 'Sun', date: '22 Jun', dinner: { name: 'Chicken Pasta Bake', tag: 'c' }, lunch: { name: 'Steak Pittas & Tzatziki', tag: 's' } },
+    { day: 'Mon', date: '23 Jun', dinner: { name: 'Beef Stroganoff & Rice', tag: 's' }, lunch: { name: 'Pasta Bake Leftovers', tag: 'c' } },
+    { day: 'Tue', date: '24 Jun', dinner: { name: 'Basa Fish Pie', tag: 'f' }, lunch: { name: 'Stroganoff on Toast', tag: 's' } },
+    { day: 'Wed', date: '25 Jun', dinner: { name: 'Honey Garlic Chicken & Rice', tag: 'c' }, lunch: { name: 'Fish Pie Leftovers', tag: 'f' } },
+    { day: 'Thu', date: '26 Jun', dinner: { name: 'Steak Fried Rice', tag: 's' }, lunch: { name: 'Caesar Salad & Chicken', tag: 'c' } },
+  ]},
+  { week: 'Final Days — June 27–30', days: [
+    { day: 'Fri', date: '27 Jun', dinner: { name: 'Breaded Chicken Burgers', tag: 'c' }, lunch: { name: 'Fried Rice Leftovers', tag: 's' } },
+    { day: 'Sat', date: '28 Jun', dinner: { name: 'Tomato & Basil Pasta', tag: 'c' }, lunch: { name: 'Chicken Wrap', tag: 'c' } },
+    { day: 'Sun', date: '29 Jun', dinner: { name: 'Steak Sandwiches & Caramelised Onion', tag: 's' }, lunch: { name: 'Leftover Pasta', tag: 'c' } },
+    { day: 'Mon', date: '30 Jun', dinner: { name: 'Chicken Soup', tag: 'c' }, lunch: { name: 'Steak Quesadillas', tag: 's' } },
+  ]},
+];
+
+// ── RECIPES DATA ───────────────────────────────────────────────
+const recipes = [
+  {
+    title: 'Texan Beef Chilli',
+    meta: 'Steak · 60 mins · Feeds 3',
+    ingredients: ['~600g steak, diced small', '2 tins kidney beans, drained', '1 tin chopped tomatoes', '1 onion, diced', '3 garlic cloves, minced', '1 beef stock cube', '2 tsp smoked paprika', '2 tsp cumin', '1 tsp chilli powder (or more)', '1 tsp oregano', 'Salt & pepper', 'Sour cream & rice to serve'],
+    steps: ['Dice steak into 1cm pieces. Season well.', 'Fry steak in batches in hot oil until browned. Set aside.', 'Fry onion 5 mins until soft. Add garlic 1 min.', 'Add all spices, stir 1 min.', 'Add tomatoes, stock cube + 200ml water. Stir.', 'Return steak. Simmer covered 30 mins.', 'Add kidney beans. Cook uncovered 10 mins to thicken.', 'Serve over rice with sour cream.'],
+  },
+  {
+    title: 'Chicken Tikka Masala',
+    meta: 'Chicken · 50 mins · Feeds 3',
+    ingredients: ['~600g chicken thighs, diced', '1 onion, diced', '4 garlic cloves', '1 thumb ginger', '1 tin chopped tomatoes', '150ml double cream', '1 chicken stock cube', '2 tsp garam masala', '2 tsp cumin', '2 tsp paprika', '1 tsp turmeric', '1 tsp chilli powder', 'Yoghurt for marinade', 'Fresh coriander'],
+    steps: ['Marinate chicken in yoghurt + half the spices 30 mins (or overnight).', 'Fry onion 8 mins until golden. Add garlic & ginger.', 'Add remaining spices, fry 2 mins.', 'Add tomatoes + stock cube. Simmer 15 mins.', 'Blend sauce smooth (or leave chunky).', 'Add cream, stir. Add chicken.', 'Simmer 15 mins until cooked through.', 'Top with fresh coriander. Serve with rice & naan.'],
+  },
+  {
+    title: 'Beef Stroganoff',
+    meta: 'Steak · 30 mins · Feeds 3',
+    ingredients: ['~400g steak, thin strips', '300g mushrooms, sliced', '1 onion, sliced', '2 garlic cloves', '250ml soured cream', '1 beef stock cube + 150ml water', '1 tbsp Worcestershire sauce', '1 tsp mustard', 'Salt & pepper', 'Rice to serve', 'Fresh parsley optional'],
+    steps: ['Fry steak strips in very hot oil 2 mins. Set aside.', 'Fry onion 5 mins, add garlic & mushrooms 5 mins.', 'Add stock + Worcestershire. Simmer 5 mins.', 'Reduce heat. Stir in soured cream & mustard.', 'Return steak. Heat through — do not boil.', 'Serve over rice.'],
+  },
+  {
+    title: 'Chicken Pasta Bake',
+    meta: 'Chicken · 40 mins · Feeds 3',
+    ingredients: ['~500g chicken thighs, diced', '300g penne pasta', '1 jar tomato & herb pasta sauce', '1 tin chopped tomatoes', '1 ball mozzarella', '1 tsp mixed herbs', 'Salt & pepper'],
+    steps: ['Boil pasta 8 mins (slightly underdone). Drain.', 'Fry chicken until cooked. Season.', 'Mix pasta, chicken, sauce & tinned tomatoes in baking dish.', 'Top with torn mozzarella.', 'Bake 200°C for 20 mins until golden & bubbling.'],
+  },
+  {
+    title: 'Basa Fish Pie',
+    meta: 'Fish · 50 mins · Feeds 3',
+    ingredients: ['~500g basa fillets', '4 large baking potatoes', '200ml double cream', '1 chicken stock cube', 'Frozen peas (handful)', 'Butter for mash', 'Salt, pepper, nutmeg'],
+    steps: ['Boil potatoes, mash with butter & season well.', 'Poach basa in cream + stock 8 mins. Flake.', 'Mix fish, cream sauce & peas in baking dish.', 'Top with mash, fork the top.', 'Bake 200°C for 25 mins until golden.'],
+  },
+  {
+    title: 'Honey Garlic Chicken',
+    meta: 'Chicken · 30 mins · Feeds 3',
+    ingredients: ['~500g chicken thighs', '3 tbsp honey', '4 garlic cloves, minced', '2 tbsp soy sauce', '1 tbsp butter', 'Rice & broccoli to serve'],
+    steps: ['Mix honey, soy, garlic together.', 'Season chicken. Fry skin-down 6 mins until golden.', 'Flip, add sauce. Cook 8 mins basting.', 'Add butter at end, baste again.', 'Rest 3 mins. Serve with rice & steamed broccoli.'],
+  },
+  {
+    title: 'Chicken Fajitas',
+    meta: 'Chicken · 25 mins · Feeds 3',
+    ingredients: ['~500g chicken breast, strips', '2 peppers, sliced', '1 onion, sliced', '2 tsp smoked paprika', '1 tsp cumin', '1 tsp chilli powder', 'Tortillas, sour cream, salsa, cheese'],
+    steps: ['Mix spices with oil. Coat chicken strips.', 'Fry chicken strips 6 mins until cooked. Set aside.', 'Fry peppers & onion 5 mins until soft.', 'Combine. Serve in warm tortillas with toppings.'],
+  },
+  {
+    title: 'Tomato & Basil Pasta',
+    meta: 'Veggie · 20 mins · Feeds 3',
+    ingredients: ['300g penne pasta', '1 jar tomato & herb pasta sauce', '1 tin chopped tomatoes', '3 garlic cloves', '1 tsp dried basil', 'Parmesan or cheddar to top', 'Salt, pepper, olive oil'],
+    steps: ['Boil pasta per pack. Drain, keep a cup of water.', 'Fry garlic in oil 1 min. Add sauce + tomatoes.', 'Simmer 8 mins. Season well.', 'Toss with pasta, add splash of pasta water if needed.', 'Top with grated cheese & serve.'],
+  },
+];
+
+// ── RENDER SHOPPING LIST ───────────────────────────────────────
+let checked = JSON.parse(localStorage.getItem('shopChecked') || '{}');
+
+function renderList() {
+  const container = document.getElementById('list-container');
+  container.innerHTML = '';
+  let total = 0, done = 0;
+  sections.forEach(sec => {
+    const header = document.createElement('div');
+    header.className = 'section-header';
+    const sectionDone = sec.items.filter(i => checked[i]).length;
+    header.innerHTML = `<span class="icon">${sec.icon}</span>${sec.label}<span class="count">${sectionDone}/${sec.items.length}</span>`;
+    container.appendChild(header);
+    sec.items.forEach(item => {
+      total++;
+      if (checked[item]) done++;
+      const el = document.createElement('div');
+      el.className = 'item' + (checked[item] ? ' done' : '');
+      el.innerHTML = `<div class="checkbox"></div><div class="item-name">${item}</div>`;
+      el.onclick = () => {
+        checked[item] = !checked[item];
+        localStorage.setItem('shopChecked', JSON.stringify(checked));
+        renderList();
+      };
+      container.appendChild(el);
+    });
+  });
+  const pct = total ? Math.round(done/total*100) : 0;
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-text').textContent = `${done} of ${total} done · ${pct}%`;
+}
+
+function clearAll() {
+  checked = {};
+  localStorage.setItem('shopChecked', JSON.stringify(checked));
+  renderList();
+}
+
+// ── RENDER MEAL PLAN ───────────────────────────────────────────
+function renderMealPlan() {
+  const container = document.getElementById('meal-plan-container');
+  const tagMap = { s: 'tag-s', c: 'tag-c', f: 'tag-f' };
+  const tagLabel = { s: '🥩 Steak', c: '🍗 Chicken', f: '🐟 Fish' };
+  mealPlan.forEach(week => {
+    container.innerHTML += `<div class="week-title">${week.week}</div>`;
+    week.days.forEach(d => {
+      container.innerHTML += `
+        <div class="day-card">
+          <div class="day-header">
+            <span class="day-name">${d.day}</span>
+            <span class="day-date">${d.date}</span>
+          </div>
+          <div class="meals">
+            <div class="meal dinner">
+              <div class="meal-type">🌙 Dinner</div>
+              <div class="meal-name">${d.dinner.name}</div>
+              <span class="protein-tag ${tagMap[d.dinner.tag]}">${tagLabel[d.dinner.tag]}</span>
+            </div>
+            <div class="meal lunch">
+              <div class="meal-type">☀️ Lunch</div>
+              <div class="meal-name">${d.lunch.name}</div>
+              <span class="protein-tag ${tagMap[d.lunch.tag]}">${tagLabel[d.lunch.tag]}</span>
+            </div>
+          </div>
+        </div>`;
+    });
+  });
+}
+
+// ── RENDER RECIPES ─────────────────────────────────────────────
+function renderRecipes() {
+  const container = document.getElementById('recipes-container');
+  recipes.forEach((r, i) => {
+    const card = document.createElement('div');
+    card.className = 'recipe-card';
+    card.innerHTML = `
+      <div class="recipe-header" onclick="toggleRecipe(${i})">
+        <div>
+          <div class="recipe-title">${r.title}</div>
+          <div class="recipe-meta">${r.meta}</div>
+        </div>
+        <span class="recipe-toggle" id="toggle-${i}">▼</span>
+      </div>
+      <div class="recipe-body" id="recipe-${i}">
+        <div class="recipe-section-title">Ingredients</div>
+        <ul class="ingredient-list">${r.ingredients.map(x => `<li>${x}</li>`).join('')}</ul>
+        <div class="recipe-section-title">Method</div>
+        <ol class="step-list">${r.steps.map(x => `<li>${x}</li>`).join('')}</ol>
+      </div>`;
+    container.appendChild(card);
+  });
+}
+
+function toggleRecipe(i) {
+  const body = document.getElementById('recipe-' + i);
+  const toggle = document.getElementById('toggle-' + i);
+  body.classList.toggle('open');
+  toggle.classList.toggle('open');
+}
+
+// ── TABS ───────────────────────────────────────────────────────
+function showTab(tab) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// ── INIT ───────────────────────────────────────────────────────
+renderList();
+renderMealPlan();
+renderRecipes();
+</script>
+</body>
+</html>
