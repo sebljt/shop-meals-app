@@ -77,6 +77,7 @@
 <div class="tab-bar">
   <div class="tab active" onclick="showTab('shop')">🛒 Shop</div>
   <div class="tab" onclick="showTab('meals')">🍽️ Meals</div>
+  <div class="tab" onclick="showTab('lunch')">☀️ Lunch</div>
   <div class="tab" onclick="showTab('recipes')">👨‍🍳 Recipes</div>
 </div>
 
@@ -92,6 +93,11 @@
 <!-- MEAL PLAN TAB -->
 <div id="tab-meals" class="tab-content">
   <div class="meal-plan" id="meal-plan-container"></div>
+</div>
+
+<!-- LUNCH TAB -->
+<div id="tab-lunch" class="tab-content">
+  <div class="meal-plan" id="lunch-plan-container"></div>
 </div>
 
 <!-- RECIPES TAB -->
@@ -365,6 +371,32 @@ function renderMealPlan() {
   });
 }
 
+// ── RENDER LUNCH PLAN ──────────────────────────────────────────
+function renderLunchPlan() {
+  const container = document.getElementById('lunch-plan-container');
+  const tagMap = { s: 'tag-s', c: 'tag-c', f: 'tag-f' };
+  const tagLabel = { s: '🥩 Steak', c: '🍗 Chicken', f: '🐟 Fish' };
+  mealPlan.forEach(week => {
+    container.innerHTML += `<div class="week-title">${week.week}</div>`;
+    week.days.forEach(d => {
+      container.innerHTML += `
+        <div class="day-card">
+          <div class="day-header">
+            <span class="day-name">${d.day}</span>
+            <span class="day-date">${d.date}</span>
+          </div>
+          <div class="meals" style="grid-template-columns: 1fr;">
+            <div class="meal lunch">
+              <div class="meal-type">☀️ Lunch</div>
+              <div class="meal-name">${d.lunch.name}</div>
+              <span class="protein-tag ${tagMap[d.lunch.tag]}">${tagLabel[d.lunch.tag]}</span>
+            </div>
+          </div>
+        </div>`;
+    });
+  });
+}
+
 // ── RENDER RECIPES ─────────────────────────────────────────────
 function renderRecipes() {
   const container = document.getElementById('recipes-container');
@@ -407,6 +439,7 @@ function showTab(tab) {
 // ── INIT ───────────────────────────────────────────────────────
 renderList();
 renderMealPlan();
+renderLunchPlan();
 renderRecipes();
 </script>
 </body>
