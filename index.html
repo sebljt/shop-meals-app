@@ -7,17 +7,17 @@
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0f1117; color: #e2e8f0; min-height: 100vh; }
-  
+
   /* TABS */
   .tab-bar { display: flex; background: #1e293b; border-bottom: 2px solid #334155; position: sticky; top: 0; z-index: 100; }
-  .tab { flex: 1; padding: 14px 8px; text-align: center; font-size: 0.8rem; font-weight: 700; color: #64748b; cursor: pointer; transition: all 0.2s; text-transform: uppercase; letter-spacing: 0.05em; }
+  .tab { flex: 1; padding: 12px 4px; text-align: center; font-size: 0.68rem; font-weight: 700; color: #64748b; cursor: pointer; transition: all 0.2s; text-transform: uppercase; letter-spacing: 0.04em; }
   .tab.active { color: #3b82f6; border-bottom: 3px solid #3b82f6; }
   .tab-content { display: none; }
   .tab-content.active { display: block; }
 
   /* SHOPPING LIST */
   .section { margin: 0; }
-  .section-header { background: #1e293b; padding: 12px 16px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: #64748b; position: sticky; top: 54px; z-index: 50; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #334155; }
+  .section-header { background: #1e293b; padding: 12px 16px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: #64748b; position: sticky; top: 50px; z-index: 50; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #334155; }
   .section-header .icon { font-size: 1.1rem; }
   .section-header .count { margin-left: auto; background: #334155; color: #94a3b8; border-radius: 10px; padding: 2px 8px; font-size: 0.65rem; }
   .item { display: flex; align-items: center; gap: 12px; padding: 13px 16px; border-bottom: 1px solid #1e293b; cursor: pointer; transition: background 0.1s; }
@@ -30,7 +30,7 @@
   .item.done .checkbox::after { display: block; }
   .item-name { font-size: 0.9rem; flex: 1; }
   .item-qty { font-size: 0.75rem; color: #64748b; flex-shrink: 0; }
-  .progress-bar { height: 4px; background: #1e293b; position: sticky; top: 54px; z-index: 60; }
+  .progress-bar { height: 4px; background: #1e293b; position: sticky; top: 50px; z-index: 60; }
   .progress-fill { height: 100%; background: #22c55e; transition: width 0.3s; }
   .progress-text { text-align: center; padding: 10px; font-size: 0.75rem; color: #64748b; }
   .clear-btn { display: block; margin: 16px; padding: 12px; background: #1e293b; border: 1px solid #334155; color: #64748b; border-radius: 8px; font-size: 0.8rem; cursor: pointer; text-align: center; }
@@ -42,16 +42,19 @@
   .day-header { padding: 10px 12px; background: #263548; display: flex; justify-content: space-between; align-items: center; }
   .day-name { font-weight: 700; font-size: 0.85rem; }
   .day-date { font-size: 0.7rem; color: #64748b; }
-  .meals { padding: 8px 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .meals { padding: 8px 12px; display: flex; flex-direction: column; gap: 6px; }
   .meal { padding: 8px; border-radius: 6px; }
-  .meal.dinner { background: #1a2535; border-left: 3px solid #3b82f6; }
+  .meal.breakfast { background: #1a2535; border-left: 3px solid #10b981; }
   .meal.lunch { background: #1a2535; border-left: 3px solid #f59e0b; }
+  .meal.dinner { background: #1a2535; border-left: 3px solid #3b82f6; }
   .meal-type { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; color: #64748b; margin-bottom: 3px; }
   .meal-name { font-size: 0.78rem; font-weight: 600; line-height: 1.3; }
   .protein-tag { display: inline-block; font-size: 0.6rem; padding: 1px 5px; border-radius: 4px; margin-top: 3px; font-weight: 700; }
   .tag-s { background: #7f1d1d; color: #fca5a5; }
-  .tag-c { background: #78350f; color: #fcd34d; }
   .tag-f { background: #0c4a6e; color: #7dd3fc; }
+  .tag-p { background: #4a1d96; color: #c4b5fd; }
+  .tag-l { background: #78350f; color: #fdba74; }
+  .tag-v { background: #14532d; color: #86efac; }
 
   /* RECIPES */
   .recipes { padding: 12px; }
@@ -75,17 +78,17 @@
 <body>
 
 <div class="tab-bar">
-  <div class="tab active" onclick="showTab('shop')">🛒 Shop</div>
-  <div class="tab" onclick="showTab('meals')">🍽️ Meals</div>
-  <div class="tab" onclick="showTab('lunch')">☀️ Lunch</div>
-  <div class="tab" onclick="showTab('recipes')">👨‍🍳 Recipes</div>
+  <div class="tab active" onclick="showTab('shop', this)">🛒 Shop</div>
+  <div class="tab" onclick="showTab('meals', this)">🍽️ Meals</div>
+  <div class="tab" onclick="showTab('breakfast', this)">🌅 Brekkie</div>
+  <div class="tab" onclick="showTab('lunch', this)">☀️ Lunch</div>
+  <div class="tab" onclick="showTab('recipes', this)">👨‍🍳 Recipes</div>
 </div>
 
 <!-- SHOPPING LIST TAB -->
 <div id="tab-shop" class="tab-content active">
   <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
   <div class="progress-text" id="progress-text">0 of 0 done</div>
-
   <div id="list-container"></div>
   <button class="clear-btn" onclick="clearAll()">↺ Uncheck all</button>
 </div>
@@ -93,6 +96,11 @@
 <!-- MEAL PLAN TAB -->
 <div id="tab-meals" class="tab-content">
   <div class="meal-plan" id="meal-plan-container"></div>
+</div>
+
+<!-- BREAKFAST TAB -->
+<div id="tab-breakfast" class="tab-content">
+  <div class="meal-plan" id="breakfast-plan-container"></div>
 </div>
 
 <!-- LUNCH TAB -->
@@ -109,138 +117,256 @@
 // ── SHOPPING DATA ──────────────────────────────────────────────
 const sections = [
   { id: 'veg', label: 'Fruit & Veg', icon: '🥦', items: [
-    'Tesco Broccoli 375g x3',
-    'Brown Onions 1kg x2',
-    'Tesco Root Ginger Loose x1',
-    'Tesco Garlic 4 Pack x1',
-    'Mixed Peppers (2 red, 2 green, 2 yellow)',
-    'Tesco Closed Cup Mushrooms 400g x1',
-    'Tesco Baby Potatoes 1kg x2',
-    'Tesco Large Baking Potatoes Loose x6',
-    'Spinach bag x1',
-    'Tesco Apple Family Bag 1.5kg x1',
-    'Suntrail Farms Easy Peelers 600g x2',
-    'Fresh coriander x1',
-    'Lemons x2',
-    'Limes x2',
+    'Brown onions 1.5kg x2',
+    'Garlic (4-pack) x3',
+    'Root ginger (loose) x1',
+    'Mixed peppers (3-pack) x2',
+    'Closed cup mushrooms 400g x2',
+    'Maris Piper potatoes 2.5kg x2',
+    'Broccoli 375g x2',
+    'Spinach 200g x1',
+    'Carrots 750g x1',
+    'Celery (head) x1',
+    'Spring onions (bunch) x2',
+    'Cherry tomatoes 250g x1',
+    'Little Gem lettuce x2',
+    'Fresh coriander x2 bunches',
+    'Lemons x3',
+    'Limes x3',
+    'Avocados x4',
+    'Bananas x1 bunch',
+    'Apples 1.5kg x1',
   ]},
   { id: 'bread', label: 'Bread & Bakery', icon: '🍞', items: [
-    'H.W. Nevills White Bread 800g x2',
-    'Tesco White Toastie Bread 800g x1',
-    'Tesco White Plain Pitta Bread 6 Pack x2',
-    'Tesco Plain Naans 2 Pack x2',
-    'Old El Paso Regular Flour Tortillas 8pk x2',
+    'White bread 800g x3',
+    'Flour tortillas 8-pack x2',
+    'Pitta bread 6-pack x1',
+    'Naan bread 2-pack x2',
+    'Ciabatta rolls x4',
+    'Burger buns 4-pack x2',
   ]},
   { id: 'meat', label: 'Meat & Fish', icon: '🥩', items: [
-    '2kg Steak (already have)',
-    '2kg Chicken (already have)',
-    'Tesco Wafer Thin Cooked Ham 125g x2',
+    'Sirloin steaks x6 — check what you have in',
+    'Rump steak (for strips) ~1.5kg (stir-fry/fajitas/tacos)',
+    'Diced beef ~1kg (chilli + stew)',
+    'Beef mince 500g x2 (burgers + bolognese)',
+    'Pork sausages 8-pack x3 (pasta/casserole/carbonara)',
+    'Streaky bacon 400g x1 (carbonara + Full English)',
+    'Pork mince 400g x1 (meatballs)',
+    'Pork belly strips 500g x1',
+    'Lamb mince 500g x1 (koftas)',
+    'Diced lamb 500g x1 (curry)',
+    'Basa fillets 500g x5 — check freezer first',
+    'King prawns 300g x2 (stir-fry + Thai green curry)',
+    'Fish fingers 10-pack x1',
+    'Wafer thin ham 125g x2',
+    'Free range eggs 12-pack x2',
   ]},
   { id: 'chilled', label: 'Chilled & Dairy', icon: '🧀', items: [
-    'Tesco British Double Cream 300ml x2',
-    'Tesco Soured Cream 300ml x2',
-    'Creamfields Mozzarella 210g x2',
-    'Creamfields Mild White Cheddar 250g x1',
-    'Creamfields Mature Grated Cheddar 250g x1',
-    'Tesco Medium Free Range Eggs 12 Pack x1',
-    'Tesco British Salted Butter 250g x2',
-    'Tesco Plain Naan 2 Pack (check chilled aisle)',
-    'Creamfields Strawberry Yoghurt 450g x2',
-    'Creamfields Low Fat Natural Yoghurt 500g x2',
-    'Tesco Double Cream 150ml x1 (curry marinade)',
+    'Milk 2L x4',
+    'Salted butter 250g x2',
+    'Double cream 300ml x2',
+    'Soured cream 300ml x1',
+    'Crème fraîche 200g x1',
+    'Natural yoghurt 500g x2',
+    'Fruit yoghurt 450g x1',
+    'Mature cheddar (grated) 250g x2',
+    'Mozzarella 210g x2',
+    'Parmesan (grated) x1',
+    'Stilton / blue cheese 200g x1',
   ]},
   { id: 'frozen', label: 'Frozen', icon: '❄️', items: [
-    'Tesco Basa Fillets 500g x3',
-    'Tesco Garden Peas 1kg x1',
-    'Growers Harvest Mixed Veg 1kg x1',
+    'Garden peas 1kg x1',
+    'Mixed vegetables 1kg x1',
+    'Chips 1.5kg x2',
+    'Mixed berries 500g x1',
   ]},
   { id: 'tinned', label: 'Tinned & Jars', icon: '🥫', items: [
-    'Tesco Italian Chopped Tomatoes 4x400g x2',
-    'Growers Harvest Red Kidney Beans 400g x2',
-    'Tesco Baked Beans 220g x4',
-    'Tesco Sweetcorn 200g x2',
-    'Hearty Food Co Tomato & Herb Pasta Sauce 440g x2',
-    'Tesco Mild Salsa Dip 300g x1',
+    'Chopped tomatoes 400g x6',
+    'Kidney beans 400g x2',
+    'Chickpeas 400g x1',
+    'Coconut milk 400ml x2',
+    'Baked beans 220g x4',
+    'Sweetcorn 198g x2',
+    'Tomato & herb pasta sauce 440g x3',
+    'Capers (jar) 100g x1',
+    'Mild salsa 300g x1',
+    'Peppercorn sauce (jar) x1',
   ]},
-  { id: 'dinner', label: 'Dinner Ingredients', icon: '🌙', items: [
+  { id: 'sauces', label: 'Sauces & Condiments', icon: '🫙', items: [
     'Soy sauce x1',
-    'Tesco Smoked Paprika 48g x1',
-    'Tesco Mild Chilli Powder 50g x1',
-    'Tesco Ground Cumin 43g x1',
+    'Fish sauce x1',
+    'Oyster sauce x1',
+    'Worcestershire sauce x1',
+    'Dijon mustard x1',
+    'Ketchup x1',
+    'Mayonnaise x1',
+    'Caesar dressing x1',
+    'Honey 340g x1',
+    'Maple syrup x1',
+    'Peanut butter x1',
+    'Jam x1',
+    'Marmalade x1',
+    'Thai green curry paste x1',
+    'Tikka/Indian curry paste x1',
+  ]},
+  { id: 'spices', label: 'Spices & Stock', icon: '🌿', items: [
+    'Smoked paprika 48g x1',
+    'Ground cumin 43g x1',
     'Garam masala x1',
     'Turmeric x1',
     'Ground coriander x1',
-    'Honey x1',
-    'Worcestershire sauce x1',
-    'Dijon mustard x1',
-    'Tesco Beef Stock Cubes 10 Pack x1',
-    'Tesco Chicken Stock Cubes 10 Pack x1',
-    'Tesco Vegetable Stock Cubes x1',
-    'Growers Harvest Red Kidney Beans 400g x2',
-    'Tesco Italian Chopped Tomatoes 4x400g x2',
-    'Tesco Mild Salsa Dip 300g x1',
-    'Hearty Food Co Tomato & Herb Pasta Sauce 440g x2',
-    'Tesco Soured Cream 300ml x2',
-    'Tesco British Double Cream 300ml x2',
-  ]},
-  { id: 'lunch', label: 'Lunch Bits', icon: '☀️', items: [
-    'Caesar dressing x1',
-    'Mayonnaise x1',
-    'Tesco Wafer Thin Cooked Ham 125g x2',
-    'Creamfields Mature Grated Cheddar 250g x1',
-    'Tesco White Toastie Bread 800g x1',
-    'Old El Paso Regular Flour Tortillas 8pk x2',
-    'Tesco White Plain Pitta Bread 6 Pack x2',
-    'Tesco Plain Naans 2 Pack x2',
-    'Tesco Sweetcorn 200g x2',
-    'Tesco Baked Beans 220g x4',
-    'Sheldon\'s Family-Filling Potato Cakes 4 Pack x3',
+    'Chilli powder x1',
+    'Chilli flakes x1',
+    'Ras el hanout x1 (koftas)',
+    'Mixed herbs x1',
+    'Dried oregano x1',
+    'Beef stock cubes 10-pack x1',
+    'Chicken stock cubes 10-pack x1',
+    'Veg stock cubes x1',
   ]},
   { id: 'dry', label: 'Dry & Cupboard', icon: '🌾', items: [
-    'Tesco Easy Cook Long Grain Rice 1kg x2',
-    'Hearty Food Co Penne Pasta 500g x2',
-    'Tesco Golden Breadcrumbs 175g x1',
+    'Long grain rice 1kg x3',
+    'Penne pasta 500g x3',
+    'Spaghetti 500g x1',
+    'Egg noodles x2 packs',
+    'Porridge oats 1kg x1',
+    'Granola 500g x1',
+    'Cereal x1 box',
+    'Plain flour 1kg x1',
+    'Breadcrumbs 175g x1',
+    'Olive oil 500ml x1',
+    'Vegetable oil 1L x1',
   ]},
   { id: 'snacks', label: 'Snacks & Sweet', icon: '🍫', items: [
-    "Fox's Rocky Original 7 Pack x2",
-    'Stockwell Variety Pack Crisps 6x25g x2',
-    'Tesco Bourbon Creams x1',
-    "Kellogg's Rice Krispies Squares x1",
-    'Cadbury Timeout Milk Chocolate x1',
-    'Toffee Crisp 7 Pack x1',
-  ]},
-  { id: 'other', label: 'Other / Household', icon: '🧴', items: [
-    'Sheldon\'s Family-Filling Potato Cakes 4 Pack x3',
-    'Sure Men Invisible Ice Deodorant x2',
-    'Tesco Pineapple & Grapefruit Drink x1',
+    'Crisps variety pack x2',
+    'Biscuits x1 pack',
+    'Chocolate multipack x1',
+    'Orange juice 1.5L x2',
   ]},
 ];
 
 // ── MEAL PLAN DATA ─────────────────────────────────────────────
 const mealPlan = [
-  { week: 'Week 1 — June 13–19', days: [
-    { day: 'Fri', date: '13 Jun', dinner: { name: 'Seared Steak & Chips', tag: 's' }, lunch: { name: 'Chicken Caesar Wraps', tag: 'c' } },
-    { day: 'Sat', date: '14 Jun', dinner: { name: 'Basa Parcels, Lemon & Capers', tag: 'f' }, lunch: { name: 'Leftover Steak Toasties', tag: 's' } },
-    { day: 'Sun', date: '15 Jun', dinner: { name: 'Roast Chicken Thighs & Roasties', tag: 'c' }, lunch: { name: 'Chicken Noodle Soup', tag: 'c' } },
-    { day: 'Mon', date: '16 Jun', dinner: { name: 'Steak Stir-fry & Rice Noodles', tag: 's' }, lunch: { name: 'Fish Finger Sarnies', tag: 'f' } },
-    { day: 'Tue', date: '17 Jun', dinner: { name: 'Chicken Fajitas', tag: 'c' }, lunch: { name: 'Steak & Rice Bowl', tag: 's' } },
-    { day: 'Wed', date: '18 Jun', dinner: { name: 'Texan Beef Chilli & Rice', tag: 's' }, lunch: { name: 'Leftover Fajita Chicken Toasties', tag: 'c' } },
-    { day: 'Thu', date: '19 Jun', dinner: { name: 'Basa Fish Tacos', tag: 'f' }, lunch: { name: 'Chilli Leftovers', tag: 's' } },
+  { week: 'Week 1 — Tue 16 – Mon 22 Jun', days: [
+    { day: 'Tue', date: '16 Jun',
+      breakfast: 'Scrambled Eggs on Toast',
+      lunch:   { name: 'Steak Ciabatta & Salad', tag: 's' },
+      dinner:  { name: 'Seared Sirloin Steak & Chips', tag: 's' } },
+    { day: 'Wed', date: '17 Jun',
+      breakfast: 'Porridge & Honey',
+      lunch:   { name: 'Leftover Steak Sandwich', tag: 's' },
+      dinner:  { name: 'Basa Fish Tacos with Lime Slaw', tag: 'f' } },
+    { day: 'Thu', date: '18 Jun',
+      breakfast: 'Yoghurt, Granola & Fruit',
+      lunch:   { name: 'Fish Taco Leftover Wrap', tag: 'f' },
+      dinner:  { name: 'Italian Sausage & Tomato Pasta', tag: 'p' } },
+    { day: 'Fri', date: '19 Jun',
+      breakfast: 'Cereal & Milk',
+      lunch:   { name: 'Sausage Pasta Leftovers', tag: 'p' },
+      dinner:  { name: 'Steak Stir-fry & Egg Noodles', tag: 's' } },
+    { day: 'Sat', date: '20 Jun',
+      breakfast: 'Full English Breakfast',
+      lunch:   { name: 'Leftover Stir-fry Noodle Box', tag: 's' },
+      dinner:  { name: 'Basa Fish & Chips', tag: 'f' } },
+    { day: 'Sun', date: '21 Jun',
+      breakfast: 'Pancakes & Maple Syrup',
+      lunch:   { name: 'Fish Finger Sarnies', tag: 'f' },
+      dinner:  { name: 'Texan Beef Chilli & Rice', tag: 's' } },
+    { day: 'Mon', date: '22 Jun',
+      breakfast: 'Toast & Jam',
+      lunch:   { name: 'Chilli Leftovers with Rice', tag: 's' },
+      dinner:  { name: 'Pork Meatball Pasta', tag: 'p' } },
   ]},
-  { week: 'Week 2 — June 20–26', days: [
-    { day: 'Fri', date: '20 Jun', dinner: { name: 'Chicken Tikka Masala & Rice', tag: 'c' }, lunch: { name: 'Fish Wrap Leftovers', tag: 'f' } },
-    { day: 'Sat', date: '21 Jun', dinner: { name: 'Steak Night — Sirloin & Broccoli', tag: 's' }, lunch: { name: 'Tikka Leftovers on Naan', tag: 'c' } },
-    { day: 'Sun', date: '22 Jun', dinner: { name: 'Chicken Pasta Bake', tag: 'c' }, lunch: { name: 'Steak Pittas & Tzatziki', tag: 's' } },
-    { day: 'Mon', date: '23 Jun', dinner: { name: 'Beef Stroganoff & Rice', tag: 's' }, lunch: { name: 'Pasta Bake Leftovers', tag: 'c' } },
-    { day: 'Tue', date: '24 Jun', dinner: { name: 'Basa Fish Pie', tag: 'f' }, lunch: { name: 'Stroganoff on Toast', tag: 's' } },
-    { day: 'Wed', date: '25 Jun', dinner: { name: 'Honey Garlic Chicken & Rice', tag: 'c' }, lunch: { name: 'Fish Pie Leftovers', tag: 'f' } },
-    { day: 'Thu', date: '26 Jun', dinner: { name: 'Steak Fried Rice', tag: 's' }, lunch: { name: 'Caesar Salad & Chicken', tag: 'c' } },
+  { week: 'Week 2 — Tue 23 – Mon 29 Jun', days: [
+    { day: 'Tue', date: '23 Jun',
+      breakfast: 'Scrambled Eggs on Toast',
+      lunch:   { name: 'Meatball Pasta Leftovers', tag: 'p' },
+      dinner:  { name: 'Steak & Pepper Fajitas', tag: 's' } },
+    { day: 'Wed', date: '24 Jun',
+      breakfast: 'Porridge & Honey',
+      lunch:   { name: 'Fajita Leftover Wrap', tag: 's' },
+      dinner:  { name: 'Basa Lemon & Caper Parcels', tag: 'f' } },
+    { day: 'Thu', date: '25 Jun',
+      breakfast: 'Yoghurt, Granola & Fruit',
+      lunch:   { name: 'Fish Parcel Leftovers', tag: 'f' },
+      dinner:  { name: 'Lamb Koftas, Rice & Flatbread', tag: 'l' } },
+    { day: 'Fri', date: '26 Jun',
+      breakfast: 'Cereal & Milk',
+      lunch:   { name: 'Kofta Flatbread Wrap', tag: 'l' },
+      dinner:  { name: 'Beef Stroganoff & Rice', tag: 's' } },
+    { day: 'Sat', date: '27 Jun',
+      breakfast: 'Full English Breakfast',
+      lunch:   { name: 'Stroganoff on Toast', tag: 's' },
+      dinner:  { name: 'Basa Fish Curry & Rice', tag: 'f' } },
+    { day: 'Sun', date: '28 Jun',
+      breakfast: 'Pancakes & Berries',
+      lunch:   { name: 'Fish Curry & Naan', tag: 'f' },
+      dinner:  { name: 'Steak Burgers & Homemade Fries', tag: 's' } },
+    { day: 'Mon', date: '29 Jun',
+      breakfast: 'Toast & Peanut Butter',
+      lunch:   { name: 'Leftover Burger & Fries', tag: 's' },
+      dinner:  { name: 'Sausage Casserole & Mash', tag: 'p' } },
   ]},
-  { week: 'Final Days — June 27–30', days: [
-    { day: 'Fri', date: '27 Jun', dinner: { name: 'Breaded Chicken Burgers', tag: 'c' }, lunch: { name: 'Fried Rice Leftovers', tag: 's' } },
-    { day: 'Sat', date: '28 Jun', dinner: { name: 'Tomato & Basil Pasta', tag: 'c' }, lunch: { name: 'Chicken Wrap', tag: 'c' } },
-    { day: 'Sun', date: '29 Jun', dinner: { name: 'Steak Sandwiches & Caramelised Onion', tag: 's' }, lunch: { name: 'Leftover Pasta', tag: 'c' } },
-    { day: 'Mon', date: '30 Jun', dinner: { name: 'Chicken Soup', tag: 'c' }, lunch: { name: 'Steak Quesadillas', tag: 's' } },
+  { week: 'Week 3 — Tue 30 Jun – Mon 6 Jul', days: [
+    { day: 'Tue', date: '30 Jun',
+      breakfast: 'Scrambled Eggs on Toast',
+      lunch:   { name: 'Sausage Casserole Leftovers', tag: 'p' },
+      dinner:  { name: 'Steak Fried Rice', tag: 's' } },
+    { day: 'Wed', date: '1 Jul',
+      breakfast: 'Porridge & Honey',
+      lunch:   { name: 'Leftover Fried Rice', tag: 's' },
+      dinner:  { name: 'Basa Fish Pie', tag: 'f' } },
+    { day: 'Thu', date: '2 Jul',
+      breakfast: 'Yoghurt, Granola & Fruit',
+      lunch:   { name: 'Fish Pie Leftovers', tag: 'f' },
+      dinner:  { name: 'Beef & Vegetable Stew & Crusty Bread', tag: 's' } },
+    { day: 'Fri', date: '3 Jul',
+      breakfast: 'Cereal & Milk',
+      lunch:   { name: 'Beef Stew Leftovers', tag: 's' },
+      dinner:  { name: 'Sausage Carbonara', tag: 'p' } },
+    { day: 'Sat', date: '4 Jul',
+      breakfast: 'Full English Breakfast',
+      lunch:   { name: 'Pasta Carbonara Leftovers', tag: 'p' },
+      dinner:  { name: 'Sirloin Steak & Peppercorn Sauce', tag: 's' } },
+    { day: 'Sun', date: '5 Jul',
+      breakfast: 'Pancakes & Syrup',
+      lunch:   { name: 'Leftover Steak Sandwich', tag: 's' },
+      dinner:  { name: 'Prawn & Vegetable Stir-fry & Noodles', tag: 'f' } },
+    { day: 'Mon', date: '6 Jul',
+      breakfast: 'Toast & Marmalade',
+      lunch:   { name: 'Prawn Stir-fry Leftovers', tag: 'f' },
+      dinner:  { name: 'Lamb & Chickpea Curry & Rice', tag: 'l' } },
+  ]},
+  { week: 'Week 4 — Tue 7 – Mon 13 Jul', days: [
+    { day: 'Tue', date: '7 Jul',
+      breakfast: 'Scrambled Eggs on Toast',
+      lunch:   { name: 'Lamb Curry Leftovers & Naan', tag: 'l' },
+      dinner:  { name: 'Steak Tacos', tag: 's' } },
+    { day: 'Wed', date: '8 Jul',
+      breakfast: 'Porridge & Honey',
+      lunch:   { name: 'Leftover Steak Taco Filling', tag: 's' },
+      dinner:  { name: 'Basa Fish Cakes & Chips', tag: 'f' } },
+    { day: 'Thu', date: '9 Jul',
+      breakfast: 'Yoghurt, Granola & Fruit',
+      lunch:   { name: 'Fish Cake Leftovers', tag: 'f' },
+      dinner:  { name: 'Beef Bolognese & Spaghetti', tag: 's' } },
+    { day: 'Fri', date: '10 Jul',
+      breakfast: 'Cereal & Milk',
+      lunch:   { name: 'Bolognese Leftovers', tag: 's' },
+      dinner:  { name: 'Sticky Pork Belly Strips & Egg Fried Rice', tag: 'p' } },
+    { day: 'Sat', date: '11 Jul',
+      breakfast: 'Full English Breakfast',
+      lunch:   { name: 'Leftover Pork & Rice', tag: 'p' },
+      dinner:  { name: 'Sirloin Steak & Blue Cheese Sauce', tag: 's' } },
+    { day: 'Sun', date: '12 Jul',
+      breakfast: 'Pancakes & Fresh Fruit',
+      lunch:   { name: 'Steak Sandwich with Blue Cheese', tag: 's' },
+      dinner:  { name: 'Thai Green Curry with Basa & Prawns', tag: 'f' } },
+    { day: 'Mon', date: '13 Jul',
+      breakfast: 'Yoghurt & Granola',
+      lunch:   { name: 'Thai Curry Leftovers & Rice', tag: 'f' },
+      dinner:  { name: 'Pasta Arrabiata', tag: 'v' } },
   ]},
 ];
 
@@ -248,57 +374,117 @@ const mealPlan = [
 const recipes = [
   {
     title: 'Texan Beef Chilli',
-    meta: 'Steak · 60 mins · Feeds 3',
-    ingredients: ['~600g steak, diced small', '2 tins kidney beans, drained', '1 tin chopped tomatoes', '1 onion, diced', '3 garlic cloves, minced', '1 beef stock cube', '2 tsp smoked paprika', '2 tsp cumin', '1 tsp chilli powder (or more)', '1 tsp oregano', 'Salt & pepper', 'Sour cream & rice to serve'],
-    steps: ['Dice steak into 1cm pieces. Season well.', 'Fry steak in batches in hot oil until browned. Set aside.', 'Fry onion 5 mins until soft. Add garlic 1 min.', 'Add all spices, stir 1 min.', 'Add tomatoes, stock cube + 200ml water. Stir.', 'Return steak. Simmer covered 30 mins.', 'Add kidney beans. Cook uncovered 10 mins to thicken.', 'Serve over rice with sour cream.'],
-  },
-  {
-    title: 'Chicken Tikka Masala',
-    meta: 'Chicken · 50 mins · Feeds 3',
-    ingredients: ['~600g chicken thighs, diced', '1 onion, diced', '4 garlic cloves', '1 thumb ginger', '1 tin chopped tomatoes', '150ml double cream', '1 chicken stock cube', '2 tsp garam masala', '2 tsp cumin', '2 tsp paprika', '1 tsp turmeric', '1 tsp chilli powder', 'Yoghurt for marinade', 'Fresh coriander'],
-    steps: ['Marinate chicken in yoghurt + half the spices 30 mins (or overnight).', 'Fry onion 8 mins until golden. Add garlic & ginger.', 'Add remaining spices, fry 2 mins.', 'Add tomatoes + stock cube. Simmer 15 mins.', 'Blend sauce smooth (or leave chunky).', 'Add cream, stir. Add chicken.', 'Simmer 15 mins until cooked through.', 'Top with fresh coriander. Serve with rice & naan.'],
+    meta: 'Beef · 60 mins · Feeds 3',
+    ingredients: ['~600g diced beef', '2 tins kidney beans, drained', '1 tin chopped tomatoes', '1 onion, diced', '3 garlic cloves, minced', '1 beef stock cube', '2 tsp smoked paprika', '2 tsp cumin', '1 tsp chilli powder', '1 tsp oregano', 'Salt & pepper', 'Sour cream & rice to serve'],
+    steps: ['Dice beef into 1cm pieces. Season well.', 'Fry beef in batches in hot oil until browned. Set aside.', 'Fry onion 5 mins until soft. Add garlic 1 min.', 'Add all spices, stir 1 min.', 'Add tomatoes, stock cube + 200ml water. Stir.', 'Return beef. Simmer covered 30 mins.', 'Add kidney beans. Cook uncovered 10 mins to thicken.', 'Serve over rice with sour cream.'],
   },
   {
     title: 'Beef Stroganoff',
-    meta: 'Steak · 30 mins · Feeds 3',
-    ingredients: ['~400g steak, thin strips', '300g mushrooms, sliced', '1 onion, sliced', '2 garlic cloves', '250ml soured cream', '1 beef stock cube + 150ml water', '1 tbsp Worcestershire sauce', '1 tsp mustard', 'Salt & pepper', 'Rice to serve', 'Fresh parsley optional'],
+    meta: 'Beef · 30 mins · Feeds 3',
+    ingredients: ['~400g steak, thin strips', '300g mushrooms, sliced', '1 onion, sliced', '2 garlic cloves', '250ml soured cream or crème fraîche', '1 beef stock cube + 150ml water', '1 tbsp Worcestershire sauce', '1 tsp Dijon mustard', 'Salt & pepper', 'Rice to serve'],
     steps: ['Fry steak strips in very hot oil 2 mins. Set aside.', 'Fry onion 5 mins, add garlic & mushrooms 5 mins.', 'Add stock + Worcestershire. Simmer 5 mins.', 'Reduce heat. Stir in soured cream & mustard.', 'Return steak. Heat through — do not boil.', 'Serve over rice.'],
-  },
-  {
-    title: 'Chicken Pasta Bake',
-    meta: 'Chicken · 40 mins · Feeds 3',
-    ingredients: ['~500g chicken thighs, diced', '300g penne pasta', '1 jar tomato & herb pasta sauce', '1 tin chopped tomatoes', '1 ball mozzarella', '1 tsp mixed herbs', 'Salt & pepper'],
-    steps: ['Boil pasta 8 mins (slightly underdone). Drain.', 'Fry chicken until cooked. Season.', 'Mix pasta, chicken, sauce & tinned tomatoes in baking dish.', 'Top with torn mozzarella.', 'Bake 200°C for 20 mins until golden & bubbling.'],
   },
   {
     title: 'Basa Fish Pie',
     meta: 'Fish · 50 mins · Feeds 3',
-    ingredients: ['~500g basa fillets', '4 large baking potatoes', '200ml double cream', '1 chicken stock cube', 'Frozen peas (handful)', 'Butter for mash', 'Salt, pepper, nutmeg'],
+    ingredients: ['~500g basa fillets', '4 large potatoes', '200ml double cream', '1 chicken stock cube', 'Frozen peas (handful)', 'Butter for mash', 'Salt, pepper, nutmeg'],
     steps: ['Boil potatoes, mash with butter & season well.', 'Poach basa in cream + stock 8 mins. Flake.', 'Mix fish, cream sauce & peas in baking dish.', 'Top with mash, fork the top.', 'Bake 200°C for 25 mins until golden.'],
   },
   {
-    title: 'Honey Garlic Chicken',
-    meta: 'Chicken · 30 mins · Feeds 3',
-    ingredients: ['~500g chicken thighs', '3 tbsp honey', '4 garlic cloves, minced', '2 tbsp soy sauce', '1 tbsp butter', 'Rice & broccoli to serve'],
-    steps: ['Mix honey, soy, garlic together.', 'Season chicken. Fry skin-down 6 mins until golden.', 'Flip, add sauce. Cook 8 mins basting.', 'Add butter at end, baste again.', 'Rest 3 mins. Serve with rice & steamed broccoli.'],
+    title: 'Sausage Casserole & Mash',
+    meta: 'Pork · 45 mins · Feeds 3',
+    ingredients: ['8 pork sausages', '1 tin chopped tomatoes', '1 tin kidney beans, drained', '1 onion, diced', '3 garlic cloves', '2 peppers, diced', '1 stock cube + 200ml water', '1 tsp smoked paprika', '1 tsp mixed herbs', '1 tbsp Worcestershire sauce', 'Mash to serve'],
+    steps: ['Brown sausages all over, set aside.', 'Fry onion & peppers 5 mins, add garlic 1 min.', 'Add paprika & herbs, stir 1 min.', 'Add tomatoes, stock & Worcestershire, stir.', 'Return sausages, simmer covered 20 mins.', 'Add beans, cook uncovered 10 mins to thicken.', 'Season, serve with mash.'],
   },
   {
-    title: 'Chicken Fajitas',
-    meta: 'Chicken · 25 mins · Feeds 3',
-    ingredients: ['~500g chicken breast, strips', '2 peppers, sliced', '1 onion, sliced', '2 tsp smoked paprika', '1 tsp cumin', '1 tsp chilli powder', 'Tortillas, sour cream, salsa, cheese'],
-    steps: ['Mix spices with oil. Coat chicken strips.', 'Fry chicken strips 6 mins until cooked. Set aside.', 'Fry peppers & onion 5 mins until soft.', 'Combine. Serve in warm tortillas with toppings.'],
+    title: 'Basa Fish Tacos',
+    meta: 'Fish · 25 mins · Feeds 3',
+    ingredients: ['~400g basa fillets', '2 tsp smoked paprika', '1 tsp cumin', '1 tsp chilli powder', 'Juice of 1 lime', '½ white cabbage, shredded', '1 carrot, grated', '2 tbsp mayo', 'Flour tortillas', 'Avocado, sliced', 'Salsa & soured cream to serve'],
+    steps: ['Mix spices with oil. Coat basa fillets.', 'Fry or griddle basa 3–4 mins each side. Flake into chunks.', 'Make slaw: mix cabbage, carrot, mayo & squeeze of lime. Season.', 'Warm tortillas in a dry pan.', 'Fill each tortilla: fish, slaw, avocado, salsa & soured cream.'],
   },
   {
-    title: 'Tomato & Basil Pasta',
+    title: 'Steak Stir-fry & Egg Noodles',
+    meta: 'Beef · 20 mins · Feeds 3',
+    ingredients: ['~400g steak, thin strips', '2 peppers, sliced', '1 onion, sliced', '2 garlic cloves, minced', '1 thumb ginger, grated', '3 tbsp soy sauce', '1 tbsp oyster sauce', '1 tsp sesame oil', 'Spring onions to garnish', 'Egg noodles to serve'],
+    steps: ['Cook noodles per pack. Drain.', 'Fry steak strips in very hot oil 2 mins. Set aside.', 'Fry onion & peppers 4 mins. Add garlic & ginger 1 min.', 'Add soy sauce, oyster sauce & sesame oil.', 'Return steak & add noodles. Toss everything together.', 'Serve topped with spring onions.'],
+  },
+  {
+    title: 'Steak & Pepper Fajitas',
+    meta: 'Beef · 25 mins · Feeds 3',
+    ingredients: ['~400g steak, thin strips', '2 peppers, sliced', '1 onion, sliced', '2 tsp smoked paprika', '1 tsp cumin', '1 tsp chilli powder', '1 lime', 'Flour tortillas', 'Soured cream, salsa, grated cheddar to serve'],
+    steps: ['Mix spices with oil & lime juice. Coat steak strips.', 'Cook steak strips in hot pan 3–4 mins. Set aside.', 'Fry peppers & onion 5 mins until softened.', 'Return steak. Warm tortillas in a dry pan.', 'Serve with soured cream, salsa & cheese.'],
+  },
+  {
+    title: 'Lamb Koftas, Rice & Flatbread',
+    meta: 'Lamb · 30 mins · Feeds 3',
+    ingredients: ['~500g lamb mince', '1 onion, grated', '3 garlic cloves, minced', '2 tsp ras el hanout', '1 tsp cumin', '1 tsp coriander', '½ tsp chilli powder', 'Fresh mint or coriander', 'Natural yoghurt to serve', 'Pitta or naan', 'Rice to serve'],
+    steps: ['Mix lamb mince with onion, garlic & spices. Season well.', 'Shape into 12 small oval koftas around skewers (or just as patties).', 'Griddle or fry 8–10 mins, turning, until cooked through.', 'Serve on rice & flatbread with yoghurt and fresh herbs.'],
+  },
+  {
+    title: 'Basa Fish Curry & Rice',
+    meta: 'Fish · 35 mins · Feeds 3',
+    ingredients: ['~500g basa fillets, cubed', '1 tin chopped tomatoes', '1 tin coconut milk', '1 onion, diced', '3 garlic cloves', '1 thumb ginger', '2 tbsp tikka/curry paste', '1 tsp turmeric', '1 tsp garam masala', 'Fresh coriander', 'Rice & naan to serve'],
+    steps: ['Fry onion 8 mins until golden. Add garlic & ginger 2 mins.', 'Add curry paste, turmeric & garam masala. Fry 2 mins.', 'Add tomatoes & coconut milk. Simmer 10 mins.', 'Gently add basa cubes. Simmer 8 mins until just cooked.', 'Top with fresh coriander. Serve with rice & naan.'],
+  },
+  {
+    title: 'Pork Meatball Pasta',
+    meta: 'Pork · 40 mins · Feeds 3',
+    ingredients: ['~400g pork mince', '1 egg', '3 tbsp breadcrumbs', '2 garlic cloves, minced', '1 tsp mixed herbs', '1 jar tomato & herb pasta sauce', '1 tin chopped tomatoes', '300g penne pasta', 'Parmesan to serve'],
+    steps: ['Mix pork mince, egg, breadcrumbs, garlic & herbs. Season.', 'Roll into ~20 small meatballs.', 'Fry meatballs in batches until golden all over.', 'Add pasta sauce & chopped tomatoes. Simmer 15 mins.', 'Cook pasta per pack. Drain.', 'Toss pasta with sauce & meatballs. Top with Parmesan.'],
+  },
+  {
+    title: 'Sausage Carbonara',
+    meta: 'Pork · 25 mins · Feeds 3',
+    ingredients: ['6 pork sausages, skin removed', '150g streaky bacon, chopped', '3 garlic cloves', '3 egg yolks + 1 whole egg', '80g Parmesan, grated', '300g spaghetti', 'Lots of black pepper', 'Salt'],
+    steps: ['Cook spaghetti in heavily salted water.', 'Fry bacon until crispy. Add sausage meat, crumble & fry 5 mins. Add garlic 1 min.', 'Mix egg yolks, whole egg & Parmesan in a bowl.', 'Drain pasta, keep a big cup of pasta water.', 'Take pan off heat. Add pasta to bacon & sausage. Pour in egg mix.', 'Toss quickly, adding pasta water to loosen — should be creamy not scrambled.', 'Season with loads of black pepper. Serve immediately.'],
+  },
+  {
+    title: 'Prawn & Vegetable Stir-fry',
+    meta: 'Seafood · 20 mins · Feeds 3',
+    ingredients: ['~300g king prawns, peeled', '2 peppers, sliced', '1 courgette or pak choi, sliced', '2 spring onions', '2 garlic cloves', '1 thumb ginger, grated', '3 tbsp soy sauce', '1 tbsp oyster sauce', '1 tsp sesame oil', '1 tsp chilli flakes', 'Egg noodles to serve'],
+    steps: ['Cook noodles per pack. Drain.', 'Fry prawns in hot oil 2 mins until pink. Set aside.', 'Fry peppers & veg 4 mins. Add garlic, ginger & chilli 1 min.', 'Add soy sauce, oyster sauce & sesame oil.', 'Return prawns & noodles. Toss. Top with spring onions.'],
+  },
+  {
+    title: 'Lamb & Chickpea Curry',
+    meta: 'Lamb · 55 mins · Feeds 3',
+    ingredients: ['~500g diced lamb', '1 tin chickpeas, drained', '1 tin chopped tomatoes', '1 onion, diced', '4 garlic cloves', '1 thumb ginger', '2 tsp garam masala', '2 tsp cumin', '1 tsp turmeric', '1 tsp chilli powder', 'Natural yoghurt for marinade', 'Fresh coriander', 'Rice & naan to serve'],
+    steps: ['Marinate lamb in yoghurt & half the spices 30 mins+.', 'Fry onion 8 mins golden. Add garlic & ginger 2 mins.', 'Add remaining spices, stir 1 min.', 'Add lamb. Brown on all sides 5 mins.', 'Add tomatoes + 100ml water. Cover, simmer 30 mins.', 'Add chickpeas. Cook uncovered 10 mins to thicken.', 'Top with coriander. Serve with rice & naan.'],
+  },
+  {
+    title: 'Thai Green Curry with Basa & Prawns',
+    meta: 'Fish/Seafood · 30 mins · Feeds 3',
+    ingredients: ['~300g basa fillets, cubed', '~200g king prawns', '1 tin coconut milk', '2 tbsp Thai green curry paste', '1 pepper, sliced', '1 courgette or pak choi', '2 garlic cloves', '1 thumb ginger', 'Fish sauce to taste', 'Fresh coriander & lime', 'Rice to serve'],
+    steps: ['Fry curry paste in a little oil 1 min until fragrant.', 'Add garlic & ginger 1 min.', 'Pour in coconut milk. Bring to gentle simmer.', 'Add pepper & veg. Cook 5 mins.', 'Add basa. Cook 5 mins. Add prawns, cook 3 mins.', 'Season with fish sauce. Squeeze over lime.', 'Top with coriander. Serve with rice.'],
+  },
+  {
+    title: 'Beef Bolognese',
+    meta: 'Beef · 50 mins · Feeds 3',
+    ingredients: ['~500g beef mince', '1 tin chopped tomatoes', '1 jar tomato & herb pasta sauce', '1 onion, diced', '3 garlic cloves', '2 carrots, diced', '2 celery sticks, diced', '1 beef stock cube', '1 tsp mixed herbs', '1 tsp oregano', 'Spaghetti to serve', 'Parmesan to top'],
+    steps: ['Fry onion, carrot & celery 8 mins until soft.', 'Add garlic 1 min. Add mince, brown well breaking up lumps.', 'Add herbs, tinned tomatoes, pasta sauce & stock cube.', 'Simmer uncovered 30 mins, stirring occasionally.', 'Season well. Cook spaghetti per pack.', 'Serve sauce over spaghetti with Parmesan.'],
+  },
+  {
+    title: 'Sticky Pork Belly Strips',
+    meta: 'Pork · 35 mins · Feeds 3',
+    ingredients: ['~500g pork belly strips', '3 tbsp soy sauce', '2 tbsp honey', '1 tbsp oyster sauce', '2 garlic cloves, minced', '1 thumb ginger, grated', '1 tsp Chinese five spice (optional)', 'Egg fried rice & spring onions to serve'],
+    steps: ['Mix soy, honey, oyster sauce, garlic, ginger & five spice.', 'Coat pork belly strips in marinade — 30 mins if possible.', 'Roast at 200°C for 25 mins, turning halfway, until sticky & caramelised.', 'Meanwhile, make egg fried rice: fry cooked rice in hot oil with egg, soy & sweetcorn.', 'Serve pork over fried rice with spring onions.'],
+  },
+  {
+    title: 'Basa Fish Cakes',
+    meta: 'Fish · 40 mins · Feeds 3',
+    ingredients: ['~400g basa fillets', '400g mashed potato', '2 spring onions, sliced', 'Juice of ½ lemon', '1 tsp mixed herbs', 'Plain flour', '1 egg, beaten', 'Breadcrumbs', 'Salt & pepper', 'Chips & peas to serve'],
+    steps: ['Poach basa in water 8 mins. Drain and flake.', 'Mix fish with mash, spring onions, lemon juice & herbs. Season.', 'Shape into 6–8 patties.', 'Dust each in flour, dip in egg, coat in breadcrumbs.', 'Fry in oil 4 mins each side until golden. Or bake 200°C 20 mins.', 'Serve with chips and peas.'],
+  },
+  {
+    title: 'Basa Lemon & Caper Parcels',
+    meta: 'Fish · 25 mins · Feeds 3',
+    ingredients: ['~400g basa fillets (3 portions)', '2 tbsp capers, drained', '1 lemon, thinly sliced', '3 tbsp butter, sliced', 'Fresh parsley', 'Salt, pepper', 'New potatoes & veg to serve'],
+    steps: ['Preheat oven to 200°C. Lay each fillet on a large piece of foil.', 'Season well. Top each with lemon slices, capers & a slice of butter.', 'Fold foil over and crimp edges to seal into parcels.', 'Bake 18–20 mins until fish is just cooked through.', 'Serve with new potatoes and greens.'],
+  },
+  {
+    title: 'Pasta Arrabiata',
     meta: 'Veggie · 20 mins · Feeds 3',
-    ingredients: ['300g penne pasta', '1 jar tomato & herb pasta sauce', '1 tin chopped tomatoes', '3 garlic cloves', '1 tsp dried basil', 'Parmesan or cheddar to top', 'Salt, pepper, olive oil'],
-    steps: ['Boil pasta per pack. Drain, keep a cup of water.', 'Fry garlic in oil 1 min. Add sauce + tomatoes.', 'Simmer 8 mins. Season well.', 'Toss with pasta, add splash of pasta water if needed.', 'Top with grated cheese & serve.'],
-  },
-  {
-    title: 'Tomato Sausage Casserole',
-    meta: 'Sausage · 45 mins · Feeds 3',
-    ingredients: ['6–8 tomato sausages', '1 tin chopped tomatoes', '1 tin kidney beans or butter beans, drained', '1 onion, diced', '3 garlic cloves, minced', '2 peppers, diced', '1 chicken or veg stock cube + 200ml water', '1 tsp smoked paprika', '1 tsp mixed herbs', '1 tbsp Worcestershire sauce', 'Salt & pepper', 'Crusty bread or mash to serve'],
-    steps: ['Brown sausages all over, set aside.', 'Fry onion & peppers 5 mins, add garlic 1 min.', 'Add paprika & herbs, stir 1 min.', 'Add tomatoes, stock & Worcestershire, stir.', 'Return sausages, simmer covered 20 mins.', 'Add beans, cook uncovered 10 mins to thicken.', 'Season, serve with mash or bread.'],
+    ingredients: ['300g penne pasta', '2 tins chopped tomatoes', '4 garlic cloves, minced', '1–2 tsp chilli flakes (to taste)', '1 tsp dried oregano', 'Fresh basil (optional)', 'Parmesan or pecorino to top', 'Olive oil', 'Salt & pepper'],
+    steps: ['Boil pasta in salted water per pack. Keep a cup of pasta water.', 'Fry garlic in olive oil 1 min. Add chilli flakes 30 secs.', 'Add tomatoes & oregano. Simmer 10 mins until thickened.', 'Season well — sauce should have a real kick.', 'Toss with pasta, add pasta water to loosen.', 'Top with Parmesan and fresh basil.'],
   },
 ];
 
@@ -329,7 +515,7 @@ function renderList() {
       container.appendChild(el);
     });
   });
-  const pct = total ? Math.round(done/total*100) : 0;
+  const pct = total ? Math.round(done / total * 100) : 0;
   document.getElementById('progress-fill').style.width = pct + '%';
   document.getElementById('progress-text').textContent = `${done} of ${total} done · ${pct}%`;
 }
@@ -340,11 +526,13 @@ function clearAll() {
   renderList();
 }
 
-// ── RENDER MEAL PLAN ───────────────────────────────────────────
+// ── RENDER HELPERS ─────────────────────────────────────────────
+const tagMap   = { s: 'tag-s', f: 'tag-f', p: 'tag-p', l: 'tag-l', v: 'tag-v' };
+const tagLabel = { s: '🥩 Beef/Steak', f: '🐟 Fish', p: '🐷 Pork', l: '🍖 Lamb', v: '🥗 Veggie' };
+
+// ── RENDER MEAL PLAN (all 3 meals) ────────────────────────────
 function renderMealPlan() {
   const container = document.getElementById('meal-plan-container');
-  const tagMap = { s: 'tag-s', c: 'tag-c', f: 'tag-f' };
-  const tagLabel = { s: '🥩 Steak', c: '🍗 Chicken', f: '🐟 Fish' };
   mealPlan.forEach(week => {
     container.innerHTML += `<div class="week-title">${week.week}</div>`;
     week.days.forEach(d => {
@@ -355,15 +543,19 @@ function renderMealPlan() {
             <span class="day-date">${d.date}</span>
           </div>
           <div class="meals">
-            <div class="meal dinner">
-              <div class="meal-type">🌙 Dinner</div>
-              <div class="meal-name">${d.dinner.name}</div>
-              <span class="protein-tag ${tagMap[d.dinner.tag]}">${tagLabel[d.dinner.tag]}</span>
+            <div class="meal breakfast">
+              <div class="meal-type">🌅 Breakfast</div>
+              <div class="meal-name">${d.breakfast}</div>
             </div>
             <div class="meal lunch">
               <div class="meal-type">☀️ Lunch</div>
               <div class="meal-name">${d.lunch.name}</div>
               <span class="protein-tag ${tagMap[d.lunch.tag]}">${tagLabel[d.lunch.tag]}</span>
+            </div>
+            <div class="meal dinner">
+              <div class="meal-type">🌙 Dinner</div>
+              <div class="meal-name">${d.dinner.name}</div>
+              <span class="protein-tag ${tagMap[d.dinner.tag]}">${tagLabel[d.dinner.tag]}</span>
             </div>
           </div>
         </div>`;
@@ -371,11 +563,9 @@ function renderMealPlan() {
   });
 }
 
-// ── RENDER LUNCH PLAN ──────────────────────────────────────────
-function renderLunchPlan() {
-  const container = document.getElementById('lunch-plan-container');
-  const tagMap = { s: 'tag-s', c: 'tag-c', f: 'tag-f' };
-  const tagLabel = { s: '🥩 Steak', c: '🍗 Chicken', f: '🐟 Fish' };
+// ── RENDER BREAKFAST ──────────────────────────────────────────
+function renderBreakfastPlan() {
+  const container = document.getElementById('breakfast-plan-container');
   mealPlan.forEach(week => {
     container.innerHTML += `<div class="week-title">${week.week}</div>`;
     week.days.forEach(d => {
@@ -385,7 +575,30 @@ function renderLunchPlan() {
             <span class="day-name">${d.day}</span>
             <span class="day-date">${d.date}</span>
           </div>
-          <div class="meals" style="grid-template-columns: 1fr;">
+          <div class="meals">
+            <div class="meal breakfast">
+              <div class="meal-type">🌅 Breakfast</div>
+              <div class="meal-name">${d.breakfast}</div>
+            </div>
+          </div>
+        </div>`;
+    });
+  });
+}
+
+// ── RENDER LUNCH ──────────────────────────────────────────────
+function renderLunchPlan() {
+  const container = document.getElementById('lunch-plan-container');
+  mealPlan.forEach(week => {
+    container.innerHTML += `<div class="week-title">${week.week}</div>`;
+    week.days.forEach(d => {
+      container.innerHTML += `
+        <div class="day-card">
+          <div class="day-header">
+            <span class="day-name">${d.day}</span>
+            <span class="day-date">${d.date}</span>
+          </div>
+          <div class="meals">
             <div class="meal lunch">
               <div class="meal-type">☀️ Lunch</div>
               <div class="meal-name">${d.lunch.name}</div>
@@ -429,16 +642,17 @@ function toggleRecipe(i) {
 }
 
 // ── TABS ───────────────────────────────────────────────────────
-function showTab(tab) {
+function showTab(tab, el) {
   document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.getElementById('tab-' + tab).classList.add('active');
-  event.target.classList.add('active');
+  el.classList.add('active');
 }
 
 // ── INIT ───────────────────────────────────────────────────────
 renderList();
 renderMealPlan();
+renderBreakfastPlan();
 renderLunchPlan();
 renderRecipes();
 </script>
